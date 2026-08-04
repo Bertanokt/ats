@@ -1,5 +1,6 @@
 package ats.service;
 
+import ats.exception.KaynakBulunamadiException;
 import ats.model.Aday;
 import ats.repository.AdayRepository;
 import ats.repository.IlanRepository;
@@ -28,7 +29,7 @@ public class AdayService {
 
     public Aday getirById(Long id){
         return adayRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Aday bulunamadı: " + id));
+                .orElseThrow(() -> new KaynakBulunamadiException("Aday bulunamadı: " + id));
     }
 
     public void  sil(Long id){

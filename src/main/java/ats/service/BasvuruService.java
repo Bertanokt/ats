@@ -1,6 +1,9 @@
 package ats.service;
 
 import ats.dto.AsamaSayimDto;
+import ats.exception.CakismaException;
+import ats.exception.GecersizIstekException;
+import ats.exception.KaynakBulunamadiException;
 import ats.model.Aday;
 import ats.model.Basvuru;
 import ats.model.BasvuruAsamasi;
@@ -32,13 +35,13 @@ public class BasvuruService {
         // 1. Aday ve ilan gerçekten var mı?
 
       Aday aday = adayRepository.findById(adayId)
-              .orElseThrow(() -> new RuntimeException("Aday bulunamadı: " + adayId));
+              .orElseThrow(() -> new KaynakBulunamadiException("Aday bulunamadı: " + adayId));
         Ilan ilan = ilanRepository.findById(ilanId)
-                .orElseThrow(() -> new RuntimeException("Ilan bulunamadi: " + ilanId));
+                .orElseThrow(() -> new KaynakBulunamadiException("Ilan bulunamadi: " + ilanId));
 
         // 2. Bu aday bu ilana zaten basvurmus mu?
         if (basvuruRepository.existsByAdayIdAndIlanId(adayId, ilanId)) {
-            throw new RuntimeException("Bu aday bu ilana zaten basvurmus");
+            throw new CakismaException("Bu aday bu ilana zaten basvurmus");
 
         }
         // 3. Yeni basvuruyu kur
@@ -55,21 +58,21 @@ public class BasvuruService {
 }
 public Basvuru getirById(Long id) {
     return basvuruRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Basvuru bulunamadi: " + id));
+            .orElseThrow(() -> new KaynakBulunamadiException("Basvuru bulunamadi: " + id));
   }
   public Basvuru asamaIlerlet(Long basvuruId){
         Basvuru basvuru = getirById(basvuruId);
         BasvuruAsamasi mevcut = basvuru.getAsama();
 
         if (mevcut == BasvuruAsamasi.ISE_ALINDI || mevcut == BasvuruAsamasi.ELENDI){
-    throw new RuntimeException("Bu basvuru sonlanmıs, ilerletilemez: " + mevcut);
+    throw new CakismaException("Bu basvuru sonlanmıs, ilerletilemez: " + mevcut);
       }
 
         BasvuruAsamasi sonraki = switch (mevcut){
             case BASVURU -> BasvuruAsamasi.ON_ELEME;
             case ON_ELEME -> BasvuruAsamasi.MULAKAT;
             case MULAKAT -> BasvuruAsamasi.TEKLIF;
-            default -> throw new RuntimeException("Gecersiz arama: " + mevcut);
+            default -> throw new GecersizIstekException("Gecersiz arama: " + mevcut);
         };
         basvuru.setAsama(sonraki);
         return basvuruRepository.save(basvuru);
@@ -78,7 +81,7 @@ public Basvuru getirById(Long id) {
   public Basvuru ele(Long basvuruId){
         Basvuru basvuru = getirById(basvuruId);
         if (basvuru.getAsama() == BasvuruAsamasi.ISE_ALINDI){
-            throw new RuntimeException("Ise alınmıs aday elenemez");
+            throw new CakismaException("Ise alınmıs aday elenemez");
         }
         basvuru.setAsama(BasvuruAsamasi.ELENDI);
         return basvuruRepository.save(basvuru);

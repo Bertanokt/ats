@@ -1,5 +1,6 @@
 package ats.service;
 
+import ats.exception.KaynakBulunamadiException;
 import ats.model.Ilan;
 import ats.repository.IlanRepository;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class IlanService {
 
     public Ilan getirById(Long id) {
         return ilanRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("İlan bulunamadı: " + id));
+                .orElseThrow(() -> new KaynakBulunamadiException("İlan bulunamadı: " + id));
     }
 
     public void sil(Long id) {

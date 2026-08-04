@@ -1,6 +1,8 @@
 package ats.service;
 
 
+import ats.exception.GecersizIstekException;
+import ats.exception.KaynakBulunamadiException;
 import ats.model.Aktivite;
 import ats.model.AktiviteTipi;
 import ats.model.Basvuru;
@@ -26,20 +28,20 @@ public class AktiviteService {
     public Aktivite ekle(Long basvuruId, AktiviteTipi tip, String icerik, Integer puan) {
         //1.Başvuru var mı
         Basvuru basvuru = basvuruRepository.findById(basvuruId)
-                .orElseThrow(() -> new RuntimeException("Basvuru bulunamadi: " + basvuruId));
+                .orElseThrow(() -> new KaynakBulunamadiException("Basvuru bulunamadi: " + basvuruId));
 
         // 2. Degerlendirmede ise puan zorunlu ve 1-5 arasi olmali
         if (tip == AktiviteTipi.DEGERLENDIRME) {
             if (puan == null) {
-                throw new RuntimeException("Degerlendirme icin puan zorunludur.");
+                throw new GecersizIstekException("Degerlendirme icin puan zorunludur.");
             }
             if (puan < 1 || puan > 5) {
-                throw new RuntimeException("Puan 1 ile 5 arasında olmalidir.");
+                throw new GecersizIstekException("Puan 1 ile 5 arasında olmalidir.");
             }
         }
         // 3. Icerik bos olamaz
         if (icerik == null || icerik.isBlank()) {
-            throw new RuntimeException("Icerik bos olamaz");
+            throw new GecersizIstekException("Icerik bos olamaz");
         }
 
         Aktivite aktivite = new Aktivite();

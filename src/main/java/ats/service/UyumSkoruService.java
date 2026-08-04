@@ -1,6 +1,7 @@
 package ats.service;
 
 import ats.dto.UyumSkoruDto;
+import ats.exception.KaynakBulunamadiException;
 import ats.model.Aday;
 import ats.model.Basvuru;
 import ats.model.Ilan;
@@ -24,7 +25,7 @@ public class UyumSkoruService {
 
     public UyumSkoruDto hesapla(Long basvuruId) {
         Basvuru basvuru = basvuruRepository.findById(basvuruId)
-                .orElseThrow(() -> new RuntimeException("Basvuru bulunamadi: " + basvuruId));
+                .orElseThrow(() -> new KaynakBulunamadiException("Basvuru bulunamadi: " + basvuruId));
 
         Ilan ilan = basvuru.getIlan();
         Aday aday = basvuru.getAday();
