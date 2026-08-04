@@ -37,4 +37,9 @@ public class IlanController {
         ilanService.sil(id);
     }
 
+    @PutMapping("/{id}")
+    public Ilan guncelle(@PathVariable Long id, @Valid @RequestBody Ilan ilan) {
+        return ilanService.guncelle(id, ilan);
+    }
+
 }

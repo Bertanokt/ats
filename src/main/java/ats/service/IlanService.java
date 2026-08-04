@@ -32,4 +32,16 @@ public class IlanService {
     public void sil(Long id) {
         ilanRepository.deleteById(id);
     }
+
+    public Ilan guncelle(Long id, Ilan yeniIlan) {
+        Ilan mevcut = getirById(id);
+
+        mevcut.setPozisyon(yeniIlan.getPozisyon());
+        mevcut.setDepartman(yeniIlan.getDepartman());
+        mevcut.setNitelikler(yeniIlan.getNitelikler());
+        mevcut.setAciklama(yeniIlan.getAciklama());
+        mevcut.setDurum(yeniIlan.getDurum());
+
+        return ilanRepository.save(mevcut);
+    }
 }

@@ -3,6 +3,7 @@ package ats.controller;
 
 import ats.model.Aday;
 import ats.model.Aday;
+import ats.model.Ilan;
 import ats.service.AdayService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -38,5 +39,9 @@ public class AdayController {
     public void sil(@PathVariable Long id) {
         adayService.sil(id);
     }
-}
 
+    @PutMapping("/{id}")
+    public Aday guncelle(@PathVariable Long id, @Valid @RequestBody Aday aday) {
+        return adayService.guncelle(id, aday);
+    }
+}

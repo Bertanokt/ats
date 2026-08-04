@@ -2,6 +2,7 @@ package ats.service;
 
 import ats.exception.KaynakBulunamadiException;
 import ats.model.Aday;
+import ats.model.Ilan;
 import ats.repository.AdayRepository;
 import ats.repository.IlanRepository;
 import org.springframework.stereotype.Service;
@@ -34,5 +35,17 @@ public class AdayService {
 
     public void  sil(Long id){
         ilanRepository.deleteById(id);
+    }
+
+    public Aday guncelle(Long id, Aday yeniAday) {
+        Aday mevcut = getirById(id);
+
+        mevcut.setAdSoyad(yeniAday.getAdSoyad());
+        mevcut.setEmail(yeniAday.getEmail());
+        mevcut.setTelefon(yeniAday.getTelefon());
+        mevcut.setYetenekler(yeniAday.getYetenekler());
+        mevcut.setOzet(yeniAday.getOzet());
+
+        return adayRepository.save(mevcut);
     }
 }
