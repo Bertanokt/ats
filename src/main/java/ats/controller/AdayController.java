@@ -4,6 +4,7 @@ package ats.controller;
 import ats.model.Aday;
 import ats.model.Aday;
 import ats.service.AdayService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class AdayController {
     }
 
     @PostMapping
-    public Aday olustur(@RequestBody Aday aday) {
+    public Aday olustur(@Valid @RequestBody Aday aday) {
         return adayService.olustur(aday);
     }
 

@@ -2,6 +2,7 @@ package ats.controller;
 
 import ats.model.Ilan;
 import ats.service.IlanService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class IlanController {
     }
 
     @PostMapping
-    public Ilan olustur(@RequestBody Ilan ilan) {
+    public Ilan olustur(@Valid @RequestBody Ilan ilan) {
         return ilanService.olustur(ilan);
     }
 
@@ -35,4 +36,5 @@ public class IlanController {
     public void sil(@PathVariable Long id) {
         ilanService.sil(id);
     }
+
 }
