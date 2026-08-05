@@ -1,6 +1,7 @@
 package ats.service;
 
 import ats.dto.AsamaSayimDto;
+import ats.dto.BasvuruDto;
 import ats.exception.CakismaException;
 import ats.exception.GecersizIstekException;
 import ats.exception.KaynakBulunamadiException;
@@ -53,8 +54,10 @@ public class BasvuruService {
 
         return basvuruRepository.save(basvuru);
 }
-       public List<Basvuru> hepsiniGetir(){
-    return basvuruRepository.findAll();
+       public List<BasvuruDto> hepsiniGetir(){
+    return basvuruRepository.findAll().stream()
+            .map(this::toDto)
+                   .toList();
 }
 public Basvuru getirById(Long id) {
     return basvuruRepository.findById(id)
@@ -72,7 +75,8 @@ public Basvuru getirById(Long id) {
             case BASVURU -> BasvuruAsamasi.ON_ELEME;
             case ON_ELEME -> BasvuruAsamasi.MULAKAT;
             case MULAKAT -> BasvuruAsamasi.TEKLIF;
-            default -> throw new GecersizIstekException("Gecersiz arama: " + mevcut);
+            case TEKLIF -> BasvuruAsamasi.ISE_ALINDI;
+            default -> throw new GecersizIstekException("Gecersiz asama: " + mevcut);
         };
         basvuru.setAsama(sonraki);
         return basvuruRepository.save(basvuru);
@@ -94,8 +98,24 @@ public Basvuru getirById(Long id) {
   public List<AsamaSayimDto> funnelRaporu(){
         return basvuruRepository.genelAsamaSayimlari(); //Tüm ilanlara başvuranşarın aşama dağılımı
   }
-  public List<Basvuru> ilanBasvurulari(Long ilanId){
-        return basvuruRepository.findByIlanId(ilanId);  //kimler başvurmuş listesi
+  public List<BasvuruDto> ilanBasvurulari(Long ilanId){
+        return basvuruRepository.findByIlanId(ilanId).stream()          //kimler başvurmuş listesi
+                .map(this::toDto)
+                .toList();
   }
+
+    private BasvuruDto toDto(Basvuru b) {
+        return new BasvuruDto(
+                b.getId(),
+                b.getAday().getId(),
+                b.getAday().getAdSoyad(),
+                b.getIlan().getId(),
+                b.getIlan().getPozisyon(),
+                b.getAsama(),
+                b.getBasvuruTarihi(),
+                b.getAktiviteler() == null ? 0 : b.getAktiviteler().size()
+        );
+    }
+
 
 }

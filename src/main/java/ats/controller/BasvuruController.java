@@ -2,6 +2,7 @@ package ats.controller;
 
 
 import ats.dto.AsamaSayimDto;
+import ats.dto.BasvuruDto;
 import ats.dto.UyumSkoruDto;
 import ats.model.Basvuru;
 import ats.service.BasvuruService;
@@ -30,7 +31,7 @@ public class BasvuruController {
     }
 
     @GetMapping
-    public List<Basvuru> hepsiniGetir() {
+    public List<BasvuruDto> hepsiniGetir() {
         return basvuruService.hepsiniGetir();
     }
     @GetMapping("/{id}/uyum")
@@ -65,7 +66,7 @@ public class BasvuruController {
     }
 
     @GetMapping("/ilan/{ilanId}")
-    public List<Basvuru> ilanBasvurulari(@PathVariable Long ilanId){
+    public List<BasvuruDto> ilanBasvurulari(@PathVariable Long ilanId){
         return basvuruService.ilanBasvurulari(ilanId);
     }
 
