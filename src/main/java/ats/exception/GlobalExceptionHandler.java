@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
@@ -53,5 +54,11 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.joining(", "));
 
         return cevapOlustur(HttpStatus.BAD_REQUEST, mesajlar);
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<HataCevabiDto> bulunamayanYol(NoResourceFoundException ex) {
+        return cevapOlustur(HttpStatus.NOT_FOUND,
+                "Boyle bir adres yok. Mevcut uc noktalar icin: /");
     }
 }
