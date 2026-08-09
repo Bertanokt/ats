@@ -20,6 +20,12 @@ public class AnaSayfaController {
                         "funnel_raporu", "/api/basvurular/rapor/funnel",
                         "uyum_skoru", "/api/basvurular/{id}/uyum",
                         "cv_parse", "POST /api/adaylar/cv-parse"
+                ),
+                "giris", Map.of(
+                        "adres", "POST /api/auth/login",
+                        "demo_admin", "admin@ats.com / demo1234",
+                        "demo_ik", "ik@ats.com / demo1234",
+                        "kullanim", "Donen token'i sonraki isteklerde 'Authorization: Bearer <token>' basligiyla gonderin"
                 )
         );
     }
