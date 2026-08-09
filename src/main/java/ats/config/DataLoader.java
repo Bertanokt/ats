@@ -3,6 +3,7 @@ package ats.config;
 import ats.model.*;
 import ats.repository.*;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -15,19 +16,30 @@ public class DataLoader implements CommandLineRunner {
     private final AdayRepository adayRepository;
     private final BasvuruRepository basvuruRepository;
     private final AktiviteRepository aktiviteRepository;
+    private final KullaniciRepository kullaniciRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public DataLoader(IlanRepository ilanRepository,
                       AdayRepository adayRepository,
                       BasvuruRepository basvuruRepository,
-                      AktiviteRepository aktiviteRepository) {
+                      AktiviteRepository aktiviteRepository,
+                      KullaniciRepository kullaniciRepository,
+                      PasswordEncoder passwordEncoder) {
         this.ilanRepository = ilanRepository;
         this.adayRepository = adayRepository;
         this.basvuruRepository = basvuruRepository;
         this.aktiviteRepository = aktiviteRepository;
+        this.kullaniciRepository = kullaniciRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public void run(String... args) {
+
+        if (kullaniciRepository.count() == 0) {
+            kullaniciOlustur("admin@ats.com", "demo1234", "Sistem Yoneticisi", Rol.ADMIN);
+            kullaniciOlustur("ik@ats.com", "demo1234", "Ayse Yilmaz", Rol.IK_UZMANI);
+        }
         // Veritabani doluysa hicbir sey yapma
         if (ilanRepository.count() > 0) {
             return;
@@ -84,6 +96,15 @@ public class DataLoader implements CommandLineRunner {
         aday.setYetenekler(yetenekler);
         aday.setOzet(ozet);
         return adayRepository.save(aday);
+    }
+
+    private void kullaniciOlustur(String email, String sifre, String adSoyad, Rol rol) {
+        Kullanici k = new Kullanici();
+        k.setEmail(email);
+        k.setSifre(passwordEncoder.encode(sifre));   // ← kritik satır
+        k.setAdSoyad(adSoyad);
+        k.setRol(rol);
+        kullaniciRepository.save(k);
     }
 
     private Basvuru basvuruOlustur(Aday aday, Ilan ilan, BasvuruAsamasi asama) {
