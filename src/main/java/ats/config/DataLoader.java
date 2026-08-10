@@ -60,6 +60,8 @@ public class DataLoader implements CommandLineRunner {
                 "Python, SQL", "Yeni mezun, veri analizi ilgisi");
         Aday aday4 = adayOlustur("Zeynep Şahin", "zeynep@ornek.com", "5554445566",
                 "React, JavaScript, CSS, TypeScript", "4 yıl frontend deneyimi");
+        Aday aday5 = adayOlustur("Emre Ak", "emre@ornek.com", "5555556677",
+                "React, JavaScript, CSS", "5 yıl frontend deneyimi");
 
         // Backend ilanina 3 basvuru, farkli asamalarda
         Basvuru b1 = basvuruOlustur(aday1, ilan1, BasvuruAsamasi.MULAKAT);
@@ -68,6 +70,11 @@ public class DataLoader implements CommandLineRunner {
 
         // Frontend ilanina 1 basvuru
         Basvuru b4 = basvuruOlustur(aday4, ilan2, BasvuruAsamasi.TEKLIF);
+
+        // Ise alinmis basvurular: departman raporunun anlamli sonuc vermesi icin
+        // iki farkli departmanda birer kayit (Yazilim ve Veri)
+        basvuruOlustur(aday5, ilan2, BasvuruAsamasi.ISE_ALINDI);   // Yazilim
+        basvuruOlustur(aday3, ilan3, BasvuruAsamasi.ISE_ALINDI);   // Veri
 
         aktiviteOlustur(b1, AktiviteTipi.NOT, "CV incelendi, uygun görünüyor", null);
         aktiviteOlustur(b1, AktiviteTipi.GORUSME, "Telefon görüşmesi yapildi", null);

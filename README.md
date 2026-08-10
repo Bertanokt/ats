@@ -174,6 +174,7 @@ Hatalar anlamlarına göre sınıflandırılır ve doğru HTTP kodlarıyla döne
 | GET | `/api/basvurular/ilan/{ilanId}` | Bir ilanın başvuruları |
 | GET | `/api/basvurular/ilan/{ilanId}/asama-raporu` | İlan bazlı aşama dağılımı |
 | GET | `/api/basvurular/rapor/funnel` | Genel huni raporu |
+| GET | `/api/basvurular/ise-alinanlar?departman=` | İşe alınanlar; `departman` opsiyonel, verilmezse tümü |
 
 ### Aktiviteler
 | Fiil | Adres | Açıklama |
@@ -257,7 +258,7 @@ export ANTHROPIC_API_KEY=sk-ant-...
 ./mvnw spring-boot:run
 ```
 
-Uygulama `http://localhost:8080` adresinde açılır. Varsayılan profil `dev`'dir; H2 veritabanı `data/` klasöründe dosya olarak tutulur. Açılışta örnek veri (3 ilan, 4 aday, 4 başvuru, 5 aktivite) otomatik oluşturulur.
+Uygulama `http://localhost:8080` adresinde açılır. Varsayılan profil `dev`'dir; H2 veritabanı `data/` klasöründe dosya olarak tutulur. Açılışta örnek veri (3 ilan, 5 aday, 6 başvuru, 5 aktivite) otomatik oluşturulur.
 
 ### Hızlı deneme
 

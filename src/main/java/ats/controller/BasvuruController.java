@@ -3,6 +3,7 @@ package ats.controller;
 
 import ats.dto.AsamaSayimDto;
 import ats.dto.BasvuruDto;
+import ats.dto.IseAlinanDto;
 import ats.dto.UyumSkoruDto;
 import ats.model.Basvuru;
 import ats.service.BasvuruService;
@@ -37,6 +38,12 @@ public class BasvuruController {
     @GetMapping("/{id}/uyum")
     public UyumSkoruDto uyumSkoru(@PathVariable Long id) {
         return uyumSkoruService.hesapla(id);
+    }
+
+    // Sabit yol, /{id} kalibindan once tanimli olmali
+    @GetMapping("/ise-alinanlar")
+    public List<IseAlinanDto> iseAlinanlar(@RequestParam(required = false) String departman) {
+        return basvuruService.iseAlinanlar(departman);
     }
 
     @GetMapping("/{id}")

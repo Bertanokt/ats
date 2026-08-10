@@ -33,4 +33,10 @@ public interface BasvuruRepository extends JpaRepository<Basvuru, Long> {
 
     // Bir ilana ait tum basvurular (listeleme icin)
     List<Basvuru> findByIlanId(Long ilanId);
+
+    // Belirli asamadaki basvurular (ise alinanlar raporu icin)
+    List<Basvuru> findByAsama(BasvuruAsamasi asama);
+
+    // Belirli asamadaki basvurular, ilanin departmanina gore filtreli
+    List<Basvuru> findByAsamaAndIlan_Departman(BasvuruAsamasi asama, String departman);
 }

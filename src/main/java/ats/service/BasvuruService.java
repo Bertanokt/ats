@@ -2,6 +2,7 @@ package ats.service;
 
 import ats.dto.AsamaSayimDto;
 import ats.dto.BasvuruDto;
+import ats.dto.IseAlinanDto;
 import ats.exception.CakismaException;
 import ats.exception.GecersizIstekException;
 import ats.exception.KaynakBulunamadiException;
@@ -119,6 +120,17 @@ public Basvuru getirById(Long id) {
                 .toList();
   }
 
+  // Ise alinmis basvurular; departman verilmezse tumu doner
+  public List<IseAlinanDto> iseAlinanlar(String departman){
+        List<Basvuru> basvurular = (departman == null || departman.isBlank())
+                ? basvuruRepository.findByAsama(BasvuruAsamasi.ISE_ALINDI)
+                : basvuruRepository.findByAsamaAndIlan_Departman(BasvuruAsamasi.ISE_ALINDI, departman);
+
+        return basvurular.stream()
+                .map(this::toIseAlinanDto)
+                .toList();
+  }
+
     private BasvuruDto toDto(Basvuru b) {
         return new BasvuruDto(
                 b.getId(),
@@ -129,6 +141,18 @@ public Basvuru getirById(Long id) {
                 b.getAsama(),
                 b.getBasvuruTarihi(),
                 b.getAktiviteler() == null ? 0 : b.getAktiviteler().size()
+        );
+    }
+
+    private IseAlinanDto toIseAlinanDto(Basvuru b) {
+        return new IseAlinanDto(
+                b.getId(),
+                b.getAday().getId(),
+                b.getAday().getAdSoyad(),
+                b.getIlan().getId(),
+                b.getIlan().getPozisyon(),
+                b.getIlan().getDepartman(),
+                b.getBasvuruTarihi()
         );
     }
 
