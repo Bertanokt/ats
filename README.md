@@ -121,6 +121,8 @@ Hatalar anlamlarına göre sınıflandırılır ve doğru HTTP kodlarıyla döne
 
 ## API uç noktaları
 
+> `/` ve `/api/auth/login` dışındaki tüm uç noktalar geçerli bir token gerektirir.
+
 ### İlanlar
 | Fiil | Adres | Açıklama |
 |---|---|---|
@@ -160,6 +162,29 @@ Hatalar anlamlarına göre sınıflandırılır ve doğru HTTP kodlarıyla döne
 | GET | `/api/basvurular/{basvuruId}/aktiviteler` | Aktiviteleri tarih sırasıyla listele |
 
 `tip` değerleri: `NOT`, `GORUSME`, `DEGERLENDIRME` (puan yalnızca `DEGERLENDIRME` için, 1–5 arası).
+
+---
+
+## Demo erişimi
+
+Tanıtım amaçlı iki hesap tanımlıdır:
+
+| Rol | E-posta | Şifre |
+|---|---|---|
+| Yönetici | admin@ats.com | demo1234 |
+| İK Uzmanı | ik@ats.com | demo1234 |
+
+Giriş:
+
+```bash
+curl -sS -X POST https://ats-api-btur.onrender.com/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@ats.com","sifre":"demo1234"}'
+```
+
+Dönen token sonraki isteklerde `Authorization: Bearer <token>` başlığıyla gönderilir.
+
+> Bu hesaplar yalnızca demo içindir. Gerçek kullanımda kaldırılmalı, kullanıcılar yönetici tarafından tanımlanmalıdır.
 
 ---
 
