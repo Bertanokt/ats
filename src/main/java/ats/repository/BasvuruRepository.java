@@ -2,6 +2,7 @@ package ats.repository;
 
 import ats.dto.AsamaSayimDto;
 import ats.model.Basvuru;
+import ats.model.BasvuruAsamasi;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,7 +11,8 @@ import java.util.List;
 
 public interface BasvuruRepository extends JpaRepository<Basvuru, Long> {
 
-    boolean existsByAdayIdAndIlanId(Long adayId, Long ilanId);
+    // Adayin bu ilanda verilen asamalardan birinde basvurusu var mi?
+    boolean existsByAdayIdAndIlanIdAndAsamaIn(Long adayId, Long ilanId, List<BasvuruAsamasi> asamalar);
 
     // Bir ilana ait basvurulari asamaya gore grupla ve say
     @Query("""

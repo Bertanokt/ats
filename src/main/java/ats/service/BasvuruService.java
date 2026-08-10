@@ -20,6 +20,15 @@ import java.util.List;
 @Service
 public class BasvuruService {
 
+    // Adayin o ilanda hala devam eden bir sureci oldugunu gosteren asamalar.
+    // ELENDI ve ISE_ALINDI disarida: aday yeniden degerlendirilebilir ya da geri donebilir.
+    private static final List<BasvuruAsamasi> AKTIF_ASAMALAR = List.of(
+            BasvuruAsamasi.BASVURU,
+            BasvuruAsamasi.ON_ELEME,
+            BasvuruAsamasi.MULAKAT,
+            BasvuruAsamasi.TEKLIF
+    );
+
     private final BasvuruRepository basvuruRepository;
     private final AdayRepository adayRepository;
     private final IlanRepository ilanRepository;
@@ -40,9 +49,9 @@ public class BasvuruService {
         Ilan ilan = ilanRepository.findById(ilanId)
                 .orElseThrow(() -> new KaynakBulunamadiException("Ilan bulunamadi: " + ilanId));
 
-        // 2. Bu aday bu ilana zaten basvurmus mu?
-        if (basvuruRepository.existsByAdayIdAndIlanId(adayId, ilanId)) {
-            throw new CakismaException("Bu aday bu ilana zaten basvurmus");
+        // 2. Bu adayin bu ilanda devam eden bir basvurusu var mi?
+        if (basvuruRepository.existsByAdayIdAndIlanIdAndAsamaIn(adayId, ilanId, AKTIF_ASAMALAR)) {
+            throw new CakismaException("Bu adayin bu ilanda devam eden bir basvurusu var");
 
         }
         // 3. Yeni basvuruyu kur

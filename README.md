@@ -73,6 +73,20 @@ BASVURU → ON_ELEME → MULAKAT → TEKLIF → ISE_ALINDI
 
 Geçiş kuralları tek yerde tanımlı olduğu için araya yeni bir aşama eklemek kolaydır.
 
+### Tekrar başvuru kuralı
+
+Aynı adayın aynı ilana ikinci kez eklenmesi koşulsuz engellenmez; engel yalnızca **adayın o ilanda devam eden bir süreci varsa** uygulanır.
+
+| Adayın o ilandaki son aşaması | Yeni başvuru |
+|---|---|
+| `BASVURU`, `ON_ELEME`, `MULAKAT`, `TEKLIF` | ❌ Engellenir (409) |
+| `ELENDI` | ✅ İzin verilir — aday yeniden değerlendirilebilir |
+| `ISE_ALINDI` | ✅ İzin verilir — ayrılıp geri dönebilir |
+
+**Neden:** Elenmiş bir aday, sonraki dönemde deneyim kazanmış ya da pozisyonun gereksinimleri değişmiş olabilir; işe alınmış biri de ayrılıp aynı pozisyona tekrar başvurabilir. Asıl önlenmek istenen, **aynı anda iki açık sürecin** yürümesidir — süreci sonlanmış başvuru geçmişte kalır, yenisi ayrı bir kayıt olarak açılır.
+
+Aktif sayılan aşamalar service katmanında tek bir listede tanımlıdır; kural değişirse tek yer güncellenir.
+
 ### Uyum skoru
 
 Adayın yetenekleri ile ilanın aradığı nitelikler karşılaştırılıp yüzde uyum hesaplanır.
@@ -112,7 +126,7 @@ Hatalar anlamlarına göre sınıflandırılır ve doğru HTTP kodlarıyla döne
 | Durum | Kod | Örnek |
 |---|---|---|
 | Kayıt bulunamadı | **404** | "Aday bulunamadı: 999" |
-| Mevcut durumla çelişki | **409** | "Bu aday bu ilana zaten başvurmuş" |
+| Mevcut durumla çelişki | **409** | "Bu adayin bu ilanda devam eden bir basvurusu var" |
 | Geçersiz veri | **400** | "Puan 1 ile 5 arasında olmalıdır" |
 
 Çeviri işini merkezî bir hata karşılayıcı yapar; service katmanı HTTP'den haberdar değildir.
