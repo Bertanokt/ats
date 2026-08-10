@@ -9,6 +9,7 @@ import ats.model.Aday;
 import ats.model.Basvuru;
 import ats.model.BasvuruAsamasi;
 import ats.model.Ilan;
+import ats.model.IlanDurumu;
 import ats.repository.AdayRepository;
 import ats.repository.BasvuruRepository;
 import ats.repository.IlanRepository;
@@ -49,12 +50,17 @@ public class BasvuruService {
         Ilan ilan = ilanRepository.findById(ilanId)
                 .orElseThrow(() -> new KaynakBulunamadiException("Ilan bulunamadi: " + ilanId));
 
-        // 2. Bu adayin bu ilanda devam eden bir basvurusu var mi?
+        // 2. Kapali ilana yeni basvuru alinmaz
+        if (ilan.getDurum() == IlanDurumu.KAPALI) {
+            throw new CakismaException("Bu ilan kapali, yeni basvuru alinmiyor");
+        }
+
+        // 3. Bu adayin bu ilanda devam eden bir basvurusu var mi?
         if (basvuruRepository.existsByAdayIdAndIlanIdAndAsamaIn(adayId, ilanId, AKTIF_ASAMALAR)) {
             throw new CakismaException("Bu adayin bu ilanda devam eden bir basvurusu var");
 
         }
-        // 3. Yeni basvuruyu kur
+        // 4. Yeni basvuruyu kur
         Basvuru basvuru = new Basvuru();
         basvuru.setAday(aday);
         basvuru.setIlan(ilan);
