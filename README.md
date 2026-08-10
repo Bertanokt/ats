@@ -121,7 +121,13 @@ Hatalar anlamlarına göre sınıflandırılır ve doğru HTTP kodlarıyla döne
 
 ## API uç noktaları
 
-> `/` ve `/api/auth/login` dışındaki tüm uç noktalar geçerli bir token gerektirir.
+> `/` ve `/api/auth/login` dışındaki tüm uç noktalar geçerli bir token gerektirir
+> 
+### Kimlik doğrulama
+| Fiil | Adres | Açıklama |
+|---|---|---|
+| POST | `/api/auth/login` | Giriş yap, token al |
+| GET | `/` | Karşılama ve endpoint listesi (token gerektirmez) |
 
 ### İlanlar
 | Fiil | Adres | Açıklama |
@@ -188,6 +194,34 @@ Dönen token sonraki isteklerde `Authorization: Bearer <token>` başlığıyla g
 
 ---
 
+### Kimlik doğrulama (JWT)
+
+Kullanıcı e-posta ve şifresiyle giriş yapar, sistem imzalı bir token döndürür.
+Sonraki her istekte bu token `Authorization: Bearer <token>` başlığıyla gönderilir;
+sunucu imzayı doğrulayıp kimliği tanır.
+
+**Durumsuz (stateless) tasarım:** Sunucu hiçbir oturum bilgisi tutmaz. Kimlik her
+istekte token'dan gelir — ölçeklenmede ve farklı istemci türlerinde avantaj sağlar.
+
+**Şifre saklama:** Şifreler BCrypt ile hash'lenir; veritabanında düz metin tutulmaz.
+Doğrulama, girilen şifrenin aynı tuzla hash'lenip karşılaştırılmasıyla yapılır.
+
+**Roller ve yetkiler:**
+
+| İşlem | ADMIN | IK_UZMANI |
+|---|---|---|
+| Görüntüleme | ✓ | ✓ |
+| Oluşturma, güncelleme | ✓ | ✓ |
+| Silme | ✓ | ✗ |
+
+> Rol ayrımı şu an silme işlemiyle sınırlıdır. İlan oluşturma, aşama ilerletme gibi
+> işlemler de aynı yapıyla ayrıştırılabilir.
+
+**Hata cevapları:** Token yoksa veya geçersizse `401`, yetki yetmiyorsa `403` —
+ikisi de anlamlı JSON mesajıyla döner.
+
+Token süresi 24 saattir. Gizli anahtar `JWT_SECRET` ortam değişkeninden okunur.
+
 ## Yerelde çalıştırma
 
 **Gereksinimler:** Java 21
@@ -239,6 +273,7 @@ Profil seçimi `SPRING_PROFILES_ACTIVE` ortam değişkeniyle yapılır, tanıml�
 | `SPRING_DATASOURCE_URL` | PostgreSQL JDBC adresi (yalnızca `prod`) |
 | `SPRING_DATASOURCE_USERNAME` | Veritabanı kullanıcısı (yalnızca `prod`) |
 | `SPRING_DATASOURCE_PASSWORD` | Veritabanı şifresi (yalnızca `prod`) |
+| `JWT_SECRET` | Token imzalama anahtarı (en az 32 karakter) |
 
 Gizli bilgiler kaynak koda yazılmaz, ortam değişkeniyle sağlanır.
 
@@ -249,10 +284,7 @@ Gizli bilgiler kaynak koda yazılmaz, ortam değişkeniyle sağlanır.
 - [ ] React (Vite) ile kullanıcı arayüzü — kanban panosu, formlar, huni grafiği
 - [ ] Birim ve entegrasyon testleri
 - [ ] Sayfalama, arama ve filtreleme
-- [ ] Kullanıcı yetkilendirmesi (rol bazlı erişim)
 - [ ] Aşama değişiminde otomatik görev/hatırlatma üretimi
 - [ ] Aday zaman çizelgesi (tüm ilanlardaki geçmiş tek akışta)
 
 ---
-
-**Geliştirici:** Bertan Öktem
