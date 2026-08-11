@@ -2,9 +2,7 @@ package ats.service;
 
 import ats.exception.KaynakBulunamadiException;
 import ats.model.Aday;
-import ats.model.Ilan;
 import ats.repository.AdayRepository;
-import ats.repository.IlanRepository;
 import org.springframework.stereotype.Service;
 
 
@@ -13,11 +11,9 @@ import java.util.List;
 @Service
 public class AdayService {
     private final AdayRepository adayRepository;
-    private final IlanRepository ilanRepository;
 
-    public AdayService(AdayRepository adayRepository, IlanRepository ilanRepository) {
+    public AdayService(AdayRepository adayRepository) {
         this.adayRepository = adayRepository;
-        this.ilanRepository = ilanRepository;
     }
 
     public Aday olustur(Aday aday){
@@ -34,7 +30,7 @@ public class AdayService {
     }
 
     public void  sil(Long id){
-        ilanRepository.deleteById(id);
+        adayRepository.deleteById(id);
     }
 
     public Aday guncelle(Long id, Aday yeniAday) {
