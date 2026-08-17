@@ -268,6 +268,38 @@ curl -sS http://localhost:8080/api/basvurular/rapor/funnel | jq
 curl -sS http://localhost:8080/api/basvurular/1/uyum | jq
 ```
 
+### Veritabanına bakmak
+
+`dev` profilinde H2 konsolu açıktır: **http://localhost:8080/h2-console**
+
+Giriş ekranındaki JDBC URL alanına `application-dev.properties`'teki adresi yazın; kullanıcı adı ve parola boştur. Konsol `@Profile("dev")` ile sınırlıdır, `prod`'da bean hiç oluşmaz.
+
+Harici bir araçla (IntelliJ Database, DBeaver) bağlanacaksanız URL'e **`;AUTO_SERVER=TRUE` eklemeyi unutmayın** — sebebi aşağıda.
+
+### Sorun giderme: açılışta "Unable to determine Dialect"
+
+```
+org.hibernate.HibernateException: Unable to determine Dialect without JDBC metadata
+```
+
+Bu mesaj yanıltıcıdır; `spring.datasource.url` genelde yerindedir. Asıl sebep log'un
+birkaç satır yukarısındadır:
+
+```
+Database may be already in use: ".../data/atsdb.mv.db"  [90020]
+```
+
+H2 dosya modunda tek yazıcıya izin verir. Başka bir istemci (çoğunlukla IntelliJ'in
+Database aracı) dosyayı açık tutuyorsa uygulama bağlanamaz, Hibernate de bağlanamadığı
+için dialect'i belirleyemez.
+
+**Çözüm:** O bağlantıyı kapatın (IntelliJ → Database panelinde veri kaynağına sağ tık →
+*Disconnect*).
+
+**Kalıcı çözüm:** Harici aracın URL'ine de `;AUTO_SERVER=TRUE` ekleyin. Uygulama
+tarafında zaten var, ancak kilidi **ilk açan taraf** belirler: IntelliJ bu parametre
+olmadan bağlanırsa dosyayı tekeline alır ve uygulama açılamaz.
+
 ---
 
 ## Yapılandırma
