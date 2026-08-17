@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .sessionManagement(o -> o.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(istek -> istek
                         // Herkese acik
-                        .requestMatchers("/", "/api/auth/**").permitAll()
+                        .requestMatchers("/", "/api/auth/**", "/api/public/**").permitAll()
 
                         // Sadece ADMIN silebilir
                         .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")

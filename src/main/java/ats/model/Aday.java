@@ -25,7 +25,7 @@ public class Aday {
 
     private String telefon;
 
-    @NotBlank(message = "Yetenekler bos olamaz")
+
     private String yetenekler;
 
     private String ozet;
