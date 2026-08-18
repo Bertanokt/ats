@@ -2,6 +2,7 @@ package ats.exception;
 
 import ats.dto.HataCevabiDto;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -38,6 +39,15 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now()
         );
         return ResponseEntity.status(durum).body(cevap);
+    }
+
+    // Veritabani kisiti (ornegin yabanci anahtar) ihlali.
+    // Yakalanmazsa istek /error'a dusuyor; JwtFilter ERROR dispatch'inde
+    // calismadigi icin kimlik kayboluyor ve istemciye yanlislikla 401 donuyor.
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<HataCevabiDto> veriButunlugu(DataIntegrityViolationException ex) {
+        return cevapOlustur(HttpStatus.CONFLICT,
+                "Bu kayit baska kayitlarla iliskili oldugu icin islem tamamlanamadi.");
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

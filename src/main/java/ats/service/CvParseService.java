@@ -39,6 +39,17 @@ public class CvParseService {
         return jsonaCevir(jsonCevap);
     }
 
+    /**
+     * Veritabaninda kayitli CV icin. Dosya yuklenirken zaten dogrulandigi icin
+     * tip/boyut kontrolleri tekrarlanmaz; metin cikarma, LLM istegi ve JSON
+     * cevirisi MultipartFile akisiyla ayni kodu kullanir.
+     */
+    public CvParseDto parseEt(byte[] icerik) {
+        String metin = pdfMetniCikar(icerik);
+        String jsonCevap = llmeSor(metin);
+        return jsonaCevir(jsonCevap);
+    }
+
     // --- 1. LLM'e sor ---
     private String llmeSor(String cvMetni) {
         String prompt = """
@@ -118,7 +129,20 @@ public class CvParseService {
             throw new GecersizIstekException("Dosya boyutu 5MB yi aşamaz");
         }
         //4. Metni çıkar
-        try(PDDocument belge = Loader.loadPDF(dosya.getBytes())){
+        try {
+            return pdfMetniCikar(dosya.getBytes());
+        } catch (IOException e){
+            throw new GecersizIstekException("PDF okunamadi: " + e.getMessage());
+        }
+    }
+
+    // Ham PDF baytlarindan metin cikarir. Iki akis da buraya duser.
+    public String pdfMetniCikar(byte[] icerik){
+        if (icerik == null || icerik.length == 0){
+            throw new GecersizIstekException("Dosya bos olamaz");
+        }
+
+        try(PDDocument belge = Loader.loadPDF(icerik)){
             PDFTextStripper stripper = new PDFTextStripper();
             String metin = stripper.getText(belge);
 
@@ -129,7 +153,6 @@ public class CvParseService {
             return metin;
 
         }
-
         catch (IOException e){
             throw new GecersizIstekException("PDF okunamadi: " + e.getMessage());
         }

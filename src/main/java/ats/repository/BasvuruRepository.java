@@ -14,6 +14,9 @@ public interface BasvuruRepository extends JpaRepository<Basvuru, Long> {
     // Adayin bu ilanda verilen asamalardan birinde basvurusu var mi?
     boolean existsByAdayIdAndIlanIdAndAsamaIn(Long adayId, Long ilanId, List<BasvuruAsamasi> asamalar);
 
+    // Aday silinebilir mi kontrolu icin
+    long countByAdayId(Long adayId);
+
     // Bir ilana ait basvurulari asamaya gore grupla ve say
     @Query("""
            SELECT new ats.dto.AsamaSayimDto(b.asama, COUNT(b))

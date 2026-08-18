@@ -28,6 +28,16 @@ public class JwtFilter extends OncePerRequestFilter {
         this.kullaniciRepository = kullaniciRepository;
     }
 
+    /**
+     * OncePerRequestFilter varsayilan olarak ERROR dispatch'ini atlar. O durumda
+     * SecurityContext bos kalir, /error kimlik dogrulama ister ve gercek hata
+     * (500/409) istemciye 401 olarak doner; kullanici da bosuna cikis yapmis olur.
+     */
+    @Override
+    protected boolean shouldNotFilterErrorDispatch() {
+        return false;
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest istek,
                                     HttpServletResponse cevap,
