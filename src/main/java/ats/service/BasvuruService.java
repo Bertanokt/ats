@@ -15,6 +15,7 @@ import ats.repository.AdayRepository;
 import ats.repository.BasvuruRepository;
 import ats.repository.IlanRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -96,6 +97,18 @@ public Basvuru getirById(Long id) {
         };
         basvuru.setAsama(sonraki);
         return basvuruRepository.save(basvuru);
+  }
+
+  /**
+   * Basvuruyu ve bagli aktiviteleri siler.
+   * Aktiviteler (gorusme notu, degerlendirme puani) basvuru baglami olmadan
+   * anlamsizdir; bu yuzden basamakli silinir. Cascade Basvuru.aktiviteler
+   * uzerinde zaten ALL olarak tanimli.
+   */
+  @Transactional
+  public void sil(Long basvuruId){
+        Basvuru basvuru = getirById(basvuruId);   // yoksa 404
+        basvuruRepository.delete(basvuru);
   }
 
   public Basvuru ele(Long basvuruId){

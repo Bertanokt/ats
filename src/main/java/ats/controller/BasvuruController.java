@@ -52,6 +52,12 @@ public class BasvuruController {
     }
 
 
+    // Yetki: SecurityConfig'te DELETE /api/** yalnizca ADMIN'e acik
+    @DeleteMapping("/{id}")
+    public void sil(@PathVariable Long id) {
+        basvuruService.sil(id);
+    }
+
     @PostMapping("/{id}/ilerlet")
     public Basvuru ilerlet(@PathVariable Long id) {
         return basvuruService.asamaIlerlet(id);
